@@ -40,10 +40,7 @@ class App extends React.Component {
 
     this.word = "FOOTBALL";
 
-    this.state = {
-      hp: 3,
-      letters: []
-    };
+
 
     this.generateAlphabet = this.generateAlphabet.bind(this);
     this.generateHiddenWord = this.generateHiddenWord.bind(this);
@@ -51,7 +48,13 @@ class App extends React.Component {
     this.handleButtonClicked = this.handleButtonClicked.bind(this);
 
     this.generateAlphabet();
-    this.generateHiddenWord();
+    const letters = this.generateHiddenWord();
+
+    this.state = {
+      hp: 3,
+      letters
+    };
+
     this.generateHiddenTable();
   }
 
@@ -71,20 +74,19 @@ class App extends React.Component {
 
   generateHiddenTable() {
     const cells = this.word.split("").map((value) => {
-      return <td><LetterCell isGuessed={ false } letter={value}/></td>;
+      return <td><LetterCell isGuessed={ this.state.letters[value] } letter={value}/></td>;
     });
 
     this.tableLetters = <table className="table-hidden-word"><tr>{ cells }</tr></table>;
   }
 
   generateHiddenWord() {
-    const letters = [];
-
-    this.word.split("").forEach((value) => {
-      letters.push({ value, status: false });
+    const letters = {};
+    this.word.split("").filter((element, index, array) => array.indexOf(element) === index).forEach((value) => {
+      letters[value] = false;
     });
 
-    this.setState({ letters });
+    return letters;
   }
 
   handleButtonClicked(text) {
@@ -93,11 +95,10 @@ class App extends React.Component {
     } else {
       if (this.word.search(text) !== -1) {
         const { letters } = this.state;
-        for (let i = 0; i < letters.length; ++i) {
-          if (letters[i][])
-        }
         letters[text] = true;
+        console.log(letters);
         this.setState({ letters });
+        console.log(letters);
       }
     }
   }
