@@ -1,0 +1,89 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+    width: 500px;
+    height: 500px;
+    background-color: blanchedalmond;
+}
+
+.hang-status {
+    width: 100%;
+    height: 50%;
+    background-color: aqua;
+}
+
+.letters {
+    width: 100%;
+    height: 50%;
+    background-color: aquamarine;
+}
+
+.table-alphabet {
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.table-alphabet td {
+    padding: 2px;
+    width: 30px;
+    height: 30px;
+}
+
+.button {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 30px;
+    background-color: red;
+    cursor: pointer;
+    border-radius: 25%;
+}
+
+.button:hover {
+    background-color: tomato;
+}
+
+.reset-button {
+    display: table;
+    margin: 0 auto;
+    border-radius: 15%;
+}
+
+.lettercell-container {
+    text-align: center;
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+.lettercell-underscore {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background-color: black;
+    bottom: 0;
+}
+
+.hidden-letter {
+
+    font-size: 30px;
+}
+
+.hang-status {
+    position: relative;
+}
+
+.table-hidden-word {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.table-hidden-word td {
+    padding-left: 10px;
+}
