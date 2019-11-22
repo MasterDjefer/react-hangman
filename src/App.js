@@ -4,13 +4,14 @@ import './App.css';
 import LetterCell from "./Components/LetterCell";
 import Button from "./Components/Button";
 
+const words = ["MONSTER", "OUTSIDER", "PLOT", "JUICE", "STEP", "MUTATION", "KING", "ELEPHANT"];
+const maxHp = 5;
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.word = "LUNATIC";
-
+    this.setRandomWord = this.setRandomWord.bind(this);
     this.generateAlphabet = this.generateAlphabet.bind(this);
     this.generateHiddenWord = this.generateHiddenWord.bind(this);
     this.generateHiddenTable = this.generateHiddenTable.bind(this);
@@ -18,21 +19,32 @@ class App extends React.Component {
     this.resetAll = this.resetAll.bind(this);
     this.checkWin = this.checkWin.bind(this);
 
+
     this.generateAlphabet();
-    const letters = this.generateHiddenWord();
+
+    const word = this.setRandomWord();
+    const letters = this.generateHiddenWord(word);
 
     this.state = {
-      hp: 3,
+      hp: maxHp,
+      word,
       letters
     };
   }
 
+  setRandomWord() {
+    return words[Math.floor(Math.random() * 1000) % words.length];
+  }
+
   resetAll() {
-    const { letters } = this.state;
-    for (const key in letters) {
-      letters[key] = false;
-    }
-    this.setState({ hp: 3, letters });
+    const word = this.setRandomWord();
+    const letters = this.generateHiddenWord(word);
+
+    this.setState({
+      hp: maxHp,
+      word,
+      letters
+    });
   }
 
   checkWin() {
@@ -61,16 +73,16 @@ class App extends React.Component {
   }
 
   generateHiddenTable() {
-    const cells = this.word.split("").map((value) => {
+    const cells = this.state.word.split("").map((value) => {
       return <td><LetterCell isGuessed={ this.state.letters[value] } letter={value} /></td>;
     });
 
     this.tableLetters = <table className="table-hidden-word"><tr>{ cells }</tr></table>;
   }
 
-  generateHiddenWord() {
+  generateHiddenWord(word) {
     const letters = {};
-    this.word.split("").filter((element, index, array) => array.indexOf(element) === index).forEach((value) => {
+    word.split("").filter((element, index, array) => array.indexOf(element) === index).forEach((value) => {
       letters[value] = false;
     });
 
@@ -81,7 +93,7 @@ class App extends React.Component {
     if (text === "Reset") {
       this.resetAll();
     } else {
-      if (this.word.search(text) !== -1) {
+      if (this.state.word.search(text) !== -1) {
         const { letters } = this.state;
         letters[text] = true;
         this.setState({ letters });
@@ -91,13 +103,15 @@ class App extends React.Component {
         this.setState({ hp });
 
         if ( hp < 1 ) {
-          alert("you're looser. restart the game");
+          alert(`you're looser. word was: ${this.state.word}.`);
+          this.resetAll();
           return;
         }
       }
 
       if (this.checkWin()) {
-        alert("you're winner. restart the game");
+        alert(`you're winner. word was: ${this.state.word}.`);
+        this.resetAll();
       }
     }
   }
