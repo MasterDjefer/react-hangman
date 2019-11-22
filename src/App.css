@@ -50,8 +50,16 @@
     border-radius: 25%;
 }
 
+.chosen-button {
+    background-color: blue;
+}
+
 .button:hover {
     background-color: tomato;
+}
+
+.chosen-button:hover {
+    background-color: darkblue;
 }
 
 .reset-button {

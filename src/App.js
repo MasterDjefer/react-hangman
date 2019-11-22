@@ -4,7 +4,7 @@ import Button from "./Components/Button";
 import './App.css';
 // import * as path from "\\images";
 
-const words = ["MONSTER", "OUTSIDER", "PLOT", "JUICE", "STEP", "MUTATION", "KING", "ELEPHANT"];
+const words = ["MONSTER", "TABLE", "FORREST", "JUICE", "APPLE", "QUEEN", "KING", "FLY"];
 const images = ["./images/1.png", "./images/2.png", "./images/3.png", "./images/4.png", "./images/5.png", "./images/6.png", "./images/7.png", "./images/8.png"];
 const maxHp = images.length;
 
@@ -17,21 +17,22 @@ class App extends React.Component {
     this.generateAlphabet = this.generateAlphabet.bind(this);
     this.generateHiddenWord = this.generateHiddenWord.bind(this);
     this.generateHiddenTable = this.generateHiddenTable.bind(this);
+    this.generateButtonsClassNames = this.generateButtonsClassNames.bind(this);
     this.handleButtonClicked = this.handleButtonClicked.bind(this);
     this.resetAll = this.resetAll.bind(this);
     this.checkWin = this.checkWin.bind(this);
 
 
-    this.generateAlphabet();
-
     const word = this.setRandomWord();
     const letters = this.generateHiddenWord(word);
+    const buttonsClassNames = this.generateButtonsClassNames();
 
     this.state = {
       hp: maxHp,
       word,
       letters,
-      status: images[0]
+      status: images[0],
+      buttonsClassNames
     };
   }
 
@@ -42,11 +43,13 @@ class App extends React.Component {
   resetAll() {
     const word = this.setRandomWord();
     const letters = this.generateHiddenWord(word);
+    const buttonsClassNames = this.generateButtonsClassNames();
 
     this.setState({
       hp: maxHp,
       word,
-      letters
+      letters,
+      buttonsClassNames
     });
   }
 
@@ -61,11 +64,21 @@ class App extends React.Component {
     return true;
   }
 
+  generateButtonsClassNames() {
+    const buttonsClassNames = {};
+    for (let i = 65; i < 91; ++i) {
+      buttonsClassNames[String.fromCharCode(i)] = "button";
+    }
+
+    return buttonsClassNames;
+  }
+
   generateAlphabet() {
     const cells = [[], [], []];
     for (let i = 65; i < 91; ++i) {
       const index = i < 75 ? 0 : (i < 85 ? 1 : 2);
-      cells[index].push(<td><Button className="button" text={ String.fromCharCode(i) } handleButtonClicked={ this.handleButtonClicked } /></td>);
+      const letter = String.fromCharCode(i);
+      cells[index].push(<td><Button className={ this.state.buttonsClassNames[letter] } text={ letter } handleButtonClicked={ this.handleButtonClicked } /></td>);
     }
 
     const rows = cells.map((value) => {
@@ -73,6 +86,8 @@ class App extends React.Component {
     });
 
     this.tableAlphabet = <table className="table-alphabet">{ rows }</table>;
+
+    return 0;
   }
 
   generateHiddenTable() {
@@ -97,12 +112,23 @@ class App extends React.Component {
       this.resetAll();
     } else {
       if (this.state.word.search(text) !== -1) {
-        const { letters } = this.state;
+        const { letters, buttonsClassNames } = this.state;
+        if (buttonsClassNames[text].search("chosen-button") !== -1) {
+          return;
+        }
+
+        buttonsClassNames[text] += " chosen-button";
+
         letters[text] = true;
         this.setState({ letters });
       } else {
-        let { hp } = this.state;
-        hp--;
+        let { hp, buttonsClassNames } = this.state;
+        if (buttonsClassNames[text].search("chosen-button") !== -1) {
+          return;
+        }
+
+        buttonsClassNames[text] += " chosen-button";
+        hp--;        
 
         if ( hp === 1 ) {
           this.setState({ hp });
@@ -122,6 +148,7 @@ class App extends React.Component {
   }
 
   render() {
+    this.generateAlphabet();
     this.generateHiddenTable();
     return (
       <div className="container">
