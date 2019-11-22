@@ -1,51 +1,22 @@
 import React from 'react';
 import './App.css';
 
-class LetterCell extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import LetterCell from "./Components/LetterCell";
+import Button from "./Components/Button";
 
-  render() {
-    return (
-      <div className="lettercell-container">
-        <span className="hidden-letter">{ this.props.isGuessed ? this.props.letter : "" }</span>
-        <div className="lettercell-underscore"></div>
-      </div>
-    );
-  }
-}
-
-class Button extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.onButtonClicked = this.onButtonClicked.bind(this);
-  }
-
-  onButtonClicked(event) {
-    this.props.handleButtonClicked(event.target.innerText);
-  }
-
-  render() {
-    return (
-      <span className={ this.props.className } onClick={ this.onButtonClicked }>{ this.props.text }</span>
-    );
-  }
-}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.word = "FOOTBALL";
-
-
+    this.word = "LUNATIC";
 
     this.generateAlphabet = this.generateAlphabet.bind(this);
     this.generateHiddenWord = this.generateHiddenWord.bind(this);
     this.generateHiddenTable = this.generateHiddenTable.bind(this);
     this.handleButtonClicked = this.handleButtonClicked.bind(this);
+    this.resetAll = this.resetAll.bind(this);
+    this.checkWin = this.checkWin.bind(this);
 
     this.generateAlphabet();
     const letters = this.generateHiddenWord();
@@ -54,8 +25,25 @@ class App extends React.Component {
       hp: 3,
       letters
     };
+  }
 
-    this.generateHiddenTable();
+  resetAll() {
+    const { letters } = this.state;
+    for (const key in letters) {
+      letters[key] = false;
+    }
+    this.setState({ hp: 3, letters });
+  }
+
+  checkWin() {
+    const { letters } = this.state;
+    for (const key in letters) {
+      if (!letters[key]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   generateAlphabet() {
@@ -74,7 +62,7 @@ class App extends React.Component {
 
   generateHiddenTable() {
     const cells = this.word.split("").map((value) => {
-      return <td><LetterCell isGuessed={ this.state.letters[value] } letter={value}/></td>;
+      return <td><LetterCell isGuessed={ this.state.letters[value] } letter={value} /></td>;
     });
 
     this.tableLetters = <table className="table-hidden-word"><tr>{ cells }</tr></table>;
@@ -91,23 +79,36 @@ class App extends React.Component {
 
   handleButtonClicked(text) {
     if (text === "Reset") {
-
+      this.resetAll();
     } else {
       if (this.word.search(text) !== -1) {
         const { letters } = this.state;
         letters[text] = true;
-        console.log(letters);
         this.setState({ letters });
-        console.log(letters);
+      } else {
+        let { hp } = this.state;
+        hp--;
+        this.setState({ hp });
+
+        if ( hp < 1 ) {
+          alert("you're looser. restart the game");
+          return;
+        }
+      }
+
+      if (this.checkWin()) {
+        alert("you're winner. restart the game");
       }
     }
   }
 
   render() {
+    this.generateHiddenTable();
+
     return (
       <div className="container">
         <div className="hang-status">
-          <span>{ this.state.hp }</span>
+          <span className="hp">{ this.state.hp }</span>
           { this.tableLetters }
         </div>
 
