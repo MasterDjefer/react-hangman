@@ -15,6 +15,13 @@
     background-color: aqua;
 }
 
+.hang-status img {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 10%);
+    width: 150px;
+}
+
 .letters {
     width: 100%;
     height: 50%;

@@ -1,11 +1,13 @@
 import React from 'react';
-import './App.css';
-
 import LetterCell from "./Components/LetterCell";
 import Button from "./Components/Button";
+import './App.css';
+// import * as path from "\\images";
 
 const words = ["MONSTER", "OUTSIDER", "PLOT", "JUICE", "STEP", "MUTATION", "KING", "ELEPHANT"];
-const maxHp = 5;
+const images = ["./images/1.png", "./images/2.png", "./images/3.png", "./images/4.png", "./images/5.png", "./images/6.png", "./images/7.png", "./images/8.png"];
+const maxHp = images.length;
+
 
 class App extends React.Component {
   constructor(props) {
@@ -28,7 +30,8 @@ class App extends React.Component {
     this.state = {
       hp: maxHp,
       word,
-      letters
+      letters,
+      status: images[0]
     };
   }
 
@@ -100,13 +103,15 @@ class App extends React.Component {
       } else {
         let { hp } = this.state;
         hp--;
-        this.setState({ hp });
 
-        if ( hp < 1 ) {
+        if ( hp === 1 ) {
+          this.setState({ hp });
           alert(`you're looser. word was: ${this.state.word}.`);
           this.resetAll();
           return;
         }
+
+        this.setState({ hp });
       }
 
       if (this.checkWin()) {
@@ -118,11 +123,11 @@ class App extends React.Component {
 
   render() {
     this.generateHiddenTable();
-
     return (
       <div className="container">
         <div className="hang-status">
-          <span className="hp">{ this.state.hp }</span>
+          {/* <span className="hp">{ this.state.hp }</span> */}
+          <img src={images[maxHp - this.state.hp]} />
           { this.tableLetters }
         </div>
 
